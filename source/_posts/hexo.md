@@ -47,7 +47,7 @@ categories:
 - git clone git@github.com:jason-gao/jason-gao.github.io.git
 
 ### init
-- 新建source分支存放hexo写作的源码，后面将public里的静态文件部署到master分支，通过jason-gao.github.io访问
+- 新建*source*分支存放hexo写作的源码，后面将public里的静态文件部署到*master*分支，通过jason-gao.github.io访问
     - git checkout -b source
 - hexo init    
 
@@ -75,9 +75,9 @@ categories:
 - http://jason-gao.github.io 
 
 ### 自定义域名
-- source文件夹下放置名为CNAME的文件，文件内容为blog.xyui.me
+- source文件夹下放置名为CNAME的文件，文件内容为gaolu.tech
 - hexo g
 - hexo d
 - 域名解析商添加解析： blog CNAME jason-gao.github.io.
-- http://blog.xuyi.me即可访问
+- http://gaolu.tech即可访问
 
