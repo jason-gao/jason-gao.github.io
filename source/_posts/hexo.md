@@ -69,7 +69,7 @@ categories:
         branch: master
 ```
 - 部署
-    - hexo -d 此命令是将生成在public下的静态文件，推送到上面配置的仓库的对应分支
+    - hexo d 此命令是将生成在public下的静态文件，推送到上面配置的仓库的对应分支
 
 ### 访问
 - http://jason-gao.github.io 
