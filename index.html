@@ -62,6 +62,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-process" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/06/26/process/" class="article-date">
+  <time datetime="2021-06-26T08:40:00.000Z" itemprop="datePublished">2021-06-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/进程通信/">进程通信</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/26/process/">进程间通信</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="进程间通信的几种方式"><a href="#进程间通信的几种方式" class="headerlink" title="进程间通信的几种方式"></a>进程间通信的几种方式</h2><p>1．进程间通信原理<br>进程通信，是指进程之间交换信息。从这个意义上讲，进程之间的同步、互斥也是一种信息交换，也是一种通信。但是，这里所说的“通信”是指进程之间交换较多的信息这样一种情况，特别是在由数据相关和有合作关系的进程之间，这种信息交换是十分必要和数量较大的。</p>
+<p>进程间通信是协调解决多个进程之间的约束关系，实现进程共同进展的关键技术，是多道系统中控制进程并发执行必不可少的机制。</p>
+<p>（1）进程的通信方式：<br>a.直接通信是指信息直接传递给接收方，如管道。在发送时，指定接收方的地址或标识，也可以指定多个接收方或广播式地址, send(Receiver, message)。在接收时，允许接收来自任意发送方的消息，并在读出消息的同时获取发送方的地址, receive(Sender,message)。</p>
+<p>b.间接通信：借助于收发双方进程之外的共享数据结构作为通信中转，如消息队列。这种数据结构称为缓冲区或信箱。通常收方和发方的数目可以是任意的。</p>
+<p>（2）进程间通信的类型：<br>a.管道通信：管道是一条在进程间以字节流方式传送的通信通道。它由OS核心的缓冲区（通常几十KB）来实现，是单向的；在实质上，是一个有OS维护的特殊共享文件，常用于命令行所指定的输入输出重定向和管道命令。在使用管道前要建立相应的管道，然后才可使用。</p>
+<p>b.消息队列机制：在消息传递系统中，进程间的数据交换以消息为单位，用户直接利用系统提供的一组通信命令（原语）来实现通信。</p>
+<p>c.共享存储器系统：基于共享数据结构的通信方式：只能传递状态和整数值（控制信息），包括进程互斥和同步所采用的信号量机制。速度快，但传送信息量小，编程复杂，属于低级通信；基于共享存储区的通信方式：能够传送任意数量的数据，属于高级通信。</p>
+<p>（3）管道通信机制<br>a.匿名管道一般用于具有亲缘关系的两个进程间通信。其中，一个进程发出某种数据信息，另外一方接受数据信息，这些数据信息通过一个共享的存储空间进行传递。</p>
+<p>b.命名管道以先进先出形式的文件存在于文件系统中。因此，只要可以访问该文件路径，就能够彼此通过命名管道相互通信。</p>
+<p>（4）消息队列机制<br>消息队列通信机制，首先由美国Hansan提出。在这种通信机制中，发送进程利用send原语将消息直接发送给接收进程，接收进程则利用receive原语接收消息。其中，消息是一个格式化的可变长信息单位。消息机制允许一个进程向任何其他进程发送一个消息。具有写入权限的进程可以往消息队列中写入一个消息，具有读出权限的进程则可以从消息队列中读出一个消息。消息的发送不需要接收方准备好，随时可发送。</p>
+<p>（5）共享内区机制<br>共享内存是一种简单而高效的进程间通信方法。共享内存就是两个进程共同拥有同一片内存，这部分内存中的任何内容，二者均可以访问。要使用共享内存进行通信，一个进程首先创建一片内存空间专门作为通信用，其他进程可以将该片内存映射到自己的虚拟地址空间。这样，读写自己地址空间中对应共享内存的区域时，就是在和其他进程进行通信。</p>
+<p>2．实现进程间的匿名管道通信。<br>其中，一个进程（源）通过管道向另一个进程（目的地）发送一个信息，目的进程接收该信息。</p>
+<p>3．使用消息队列来实现进程和进程之间的通信。<br>接收进程首先创建一个消息队列，随后发送进程可以打开消息队列，从而实现消息的发送和接收。实现时，发送进程在利用发送原语发送消息之前，先在自己的内存空间设置一发送区，把待发送的消息正文等信息填入其中，然后调用发送原语，把消息发送给接收进程。发送原语建立一缓冲区，把发送区中的消息复制到缓冲区，并将该缓冲区挂在接收进程的消息队列上。接收进程调用接收原语，从消息队列中摘下第一个消息，将其复制到消息接收区中。</p>
+<p>4．使用共享存储区来实现两个进程之间的通信。<br>进程通信前，发送进程先向系统申请获得共享存储区中的一个分区（共享区），并指定该分区的关键字。然后，由申请者把获得的共享区连接到本进程上。此后，便可像读写普通存储器一样进行读、写该共享区。接收进程同样可像发送进程一样将共享区连接到自己的进程上，进行读、写操作。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.xyui.me/2021/06/26/process/" data-id="ckqdtyk400004grfvgixsm1tv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进程间通信/">进程间通信</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-sqlinject" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2021/06/23/sqlinject/" class="article-date">
@@ -113,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.xyui.me/2021/06/23/sqlinject/" data-id="ckq995w1q0002axfvuq0dblyv" class="article-share-link">Share</a>
+      <a data-url="http://blog.xyui.me/2021/06/23/sqlinject/" data-id="ckqdtyk46000agrfvw4awueli" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql注入/">sql注入</a></li></ul>
@@ -159,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.xyui.me/2020/07/09/PromotionPlan/" data-id="ckq995w1v0005axfv02ofrz69" class="article-share-link">Share</a>
+      <a data-url="http://blog.xyui.me/2020/07/09/PromotionPlan/" data-id="ckqdtyk3q0000grfv8ws3xlzt" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/推广计划/">推广计划</a></li></ul>
@@ -213,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.xyui.me/2020/07/01/node-express/" data-id="ckq995w1x0006axfvz9pli547" class="article-share-link">Share</a>
+      <a data-url="http://blog.xyui.me/2020/07/01/node-express/" data-id="ckqdtyk430005grfvril7ufbz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/express/">express</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -337,7 +393,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.xyui.me/2019/07/07/hexo/" data-id="ckq995w1o0001axfvm4gkxpo0" class="article-share-link">Share</a>
+      <a data-url="http://blog.xyui.me/2019/07/07/hexo/" data-id="ckqdtyk440006grfvneilywyb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
@@ -388,7 +444,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.xyui.me/2019/07/07/hello-world/" data-id="ckq995w1j0000axfv04srdo20" class="article-share-link">Share</a>
+      <a data-url="http://blog.xyui.me/2019/07/07/hello-world/" data-id="ckqdtyk3u0001grfv85x1hggu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -408,7 +464,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/PromotionPlan/">PromotionPlan</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/node/">node</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">safe</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/PromotionPlan/">PromotionPlan</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/node/">node</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">safe</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/进程通信/">进程通信</a></li></ul>
     </div>
   </div>
 
@@ -418,7 +474,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/express/">express</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/推广计划/">推广计划</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/express/">express</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql注入/">sql注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/推广计划/">推广计划</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程间通信/">进程间通信</a></li></ul>
     </div>
   </div>
 
@@ -428,7 +484,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/express/" style="font-size: 10px;">express</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/node/" style="font-size: 20px;">node</a> <a href="/tags/sql注入/" style="font-size: 10px;">sql注入</a> <a href="/tags/推广计划/" style="font-size: 10px;">推广计划</a>
+      <a href="/tags/express/" style="font-size: 10px;">express</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/node/" style="font-size: 20px;">node</a> <a href="/tags/sql注入/" style="font-size: 10px;">sql注入</a> <a href="/tags/推广计划/" style="font-size: 10px;">推广计划</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
     </div>
   </div>
 
@@ -450,6 +506,10 @@
       <ul>
         
           <li>
+            <a href="/2021/06/26/process/">进程间通信</a>
+          </li>
+        
+          <li>
             <a href="/2021/06/23/sqlinject/">sql inject leak</a>
           </li>
         
@@ -463,10 +523,6 @@
         
           <li>
             <a href="/2019/07/07/hexo/">hexo github pages</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/07/hello-world/">Hello World</a>
           </li>
         
       </ul>
